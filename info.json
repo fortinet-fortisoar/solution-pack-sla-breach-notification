@@ -1,0 +1,51 @@
+{
+    "name": "sLANotification",
+    "version": "1.0.0",
+    "type": "solutionpack",
+    "local": true,
+    "label": "SLA Notification",
+    "dependencies": [
+        {
+            "name": "socSimulator",
+            "type": "solutionpack",
+            "label": "SOC Simulator",
+            "version": "2.0.1",
+            "minVersion": null
+        }
+    ],
+    "prerequisite": "Required connectors:\n- MS Exchange\n- MS Teams (Optional)",
+    "publisher": "Naili.M",
+    "description": "Notify users when SLA is about to be breached or breached",
+    "help": null,
+    "category": [
+        "Monitoring"
+    ],
+    "supportInfo": null,
+    "iconLarge": "fsr-icon-large.png",
+    "recordTags": [
+        "Notification",
+        "SLA"
+    ],
+    "fsrMinCompatibility": "7.2.0",
+    "date": "2022-11-08T07:47:38+00:00",
+    "contents": {
+        "playbooks": [
+            {
+                "name": "02 - Use Case - SLA Notification"
+            }
+        ],
+        "globalVariables": null,
+        "dashboards": [
+            {
+                "name": "SLA Monitor"
+            }
+        ],
+        "recordSets": [
+            {
+                "name": null,
+                "apiName": "scenario",
+                "count": 6
+            }
+        ]
+    }
+}

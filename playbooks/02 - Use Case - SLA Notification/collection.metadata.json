@@ -1,0 +1,11 @@
+{
+    "@context": "\/api\/3\/contexts\/WorkflowCollection",
+    "@type": "WorkflowCollection",
+    "name": "02 - Use Case - SLA Notification",
+    "description": "Sends SLA notifications",
+    "visible": true,
+    "image": null,
+    "uuid": "904b64ba-4c29-43c9-a46f-62e117bd4aa3",
+    "deletedAt": null,
+    "recordTags": []
+}

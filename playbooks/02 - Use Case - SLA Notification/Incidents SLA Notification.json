@@ -1,0 +1,479 @@
+{
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Incidents SLA Notification",
+    "aliasName": null,
+    "tag": null,
+    "description": "Notify users when SLA is about to be breached",
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/904b64ba-4c29-43c9-a46f-62e117bd4aa3",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/73fea0bb-b1c9-46e2-9ad0-d0147287b64f",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Compute Notification Bodies",
+            "description": null,
+            "arguments": {
+                "_update_attributes": "{% set red_color='<font color = \"red\"><strong>{}<\/strong><\/font>' %}\n{% set orange_color='<font color = \"orange\"><strong>{}<\/strong><\/font>' %}\n{% macro build_ack_sla_msg(alert) %}{{orange_color.format(alert.remaining_ack_time) ~ '\\' Before Ack SLA breach' if alert.remaining_ack_time > 0 else red_color.format(alert.remaining_ack_time) ~ '\\' since Ack SLA breach'}}{% endmacro %}\n{% macro build_res_sla_msg(alert) %}{{orange_color.format(alert.remaining_response_time) ~ '\\' Before Res SLA breach' if alert.remaining_response_time > 0 else red_color.format(alert.remaining_response_time) ~ '\\' Since Res SLA breach'}}{% endmacro %}\n\n{%for entry in vars.alerts%}\n{{ entry.update({'Acknowledgment SLA Status':build_ack_sla_msg(entry)}) }}\n{{ entry.update({'Response SLA Status':build_res_sla_msg(entry)}) }}\n{{ entry.update({'Ack Due By':arrow.get(entry.ackDueDate).to(\"UTC\").format(\"DD\/MMM HH:mm\")}) }}\n{{ entry.update({'Response Due By':arrow.get(entry.resDueBy).to(\"UTC\").format(\"DD\/MMM HH:mm\")}) }}\n{{ entry.update({'Assigned To':entry.incidentLead.email})}}\n{%endfor%}"
+            },
+            "status": null,
+            "top": "705",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "0de7283b-1585-414a-b6ab-afaa5a1629cd"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Single Recipient",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/f45befeb-54ec-46bc-92dd-d5fe5a1fafef",
+                        "condition": "{{ vars.email_recipient | length > 0 }}",
+                        "step_name": "Generate Email Body"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/728015f5-9fb5-4e0c-ac56-11cfef61a934",
+                        "step_name": "Send Notification Emails"
+                    }
+                ]
+            },
+            "status": null,
+            "top": "840",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "1a565156-9e9d-45d6-b7a0-84fc00c3a6aa"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": "- minutes_left: Configure the number of minutes left before the notification is sent\n- email_recipient: if set it will be the recipient of all notifications, else the record owner will receive it\n- create_announcement: if set to True, an announcement record will be created which can be used as a trigger for a standard FortiSOAR notification",
+            "arguments": {
+                "alerts": "[]",
+                "minutes_left": "10",
+                "email_recipient": "asmith@o365.fortielab.com",
+                "create_announcement": "True"
+            },
+            "status": null,
+            "top": "160",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "41a0e576-90e5-4714-b1ad-7ffab09f9236"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Announcements",
+            "description": null,
+            "arguments": {
+                "when": "{{vars.alerts | length > 0 and vars.create_announcement is true}}",
+                "for_each": {
+                    "item": "{{vars.alerts}}",
+                    "__bulk": false,
+                    "parallel": false,
+                    "condition": ""
+                },
+                "resource": {
+                    "title": "Alert ID: {{vars.item['id']}} SLA Status",
+                    "__replace": "",
+                    "description": "<p>{%for vars.item in vars.alerts%}{%endfor%}<\/p>\n<table border=\"1\" style=\"border-collapse: collapse; width: 99.9951%; background-color: #1e3d67; border-color: #34495E; border-style: dotted;\">\n<tbody>\n<tr>\n<td style=\"text-align: center;\">ID<\/td>\n<td style=\"text-align: center;\">Name<\/td>\n<td style=\"text-align: center;\">Type<\/td>\n<td style=\"text-align: center;\">Acknowledgment SLA<\/td>\n<td style=\"text-align: center;\">Ack Due By<\/td>\n<td style=\"text-align: center;\">Response SLA<\/td>\n<td style=\"text-align: center;\">Response Due By<\/td>\n<\/tr>\n<tr style=\"text-align: left; background-color: #d1d8dc;\">\n<td>{{vars.item['id']}}<\/td>\n<td>{{vars.item['name']}}<\/td>\n<td>{{vars.item['@type']}}<\/td>\n<td>{{vars.item['Acknowledgment SLA Status']}}<\/td>\n<td>{{vars.item['Ack Due By']}}<\/td>\n<td>{{vars.item['Response SLA Status']}}<\/td>\n<td>{{vars.item['Response Due By']}}<\/td>\n<\/tr>\n<\/tbody>\n<\/table>",
+                    "notifyOnEmail": false,
+                    "announcementType": "\/api\/3\/picklists\/cfbb2798-ec01-4652-b774-fb2c19e35eb5",
+                    "announcementCriticality": "\/api\/3\/picklists\/e8e41070-f135-42f2-892b-7017cbba4024"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/announcements",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Overwrite"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1110",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "5ccecbd5-b6cc-4cba-b86e-1013361e49b2"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Compute Remaining Time",
+            "description": null,
+            "arguments": {
+                "_remaining_time": "{%for entry in vars.all_alerts%}\n{{entry.update({\"remaining_ack_time\":((entry.ackDueDate - arrow.now().int_timestamp)\/60)|round(0, 'ceil'),\"remaining_response_time\":((entry.resDueBy - arrow.now().int_timestamp)\/60)|round(0, 'ceil')})}}\n{%endfor%}"
+            },
+            "status": null,
+            "top": "435",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "64e34513-614e-4191-9cff-e36c004fa97d"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Send Notification Emails",
+            "description": null,
+            "arguments": {
+                "name": "Exchange",
+                "when": "{{vars.alerts|length > 0}}",
+                "config": "9b1523e6-7f4a-4bd0-82fd-9ed0e2bae171",
+                "params": {
+                    "body": "<p>{%for vars.item in vars.alerts%}{%endfor%}<\/p>\n<table style=\"border-collapse: collapse; width: 99.9951%; background-color: #1e3d67; border-color: #34495E; border-style: dotted;\" border=\"1\">\n<tbody>\n<tr>\n<td style=\"text-align: center;\">ID<\/td>\n<td style=\"text-align: center;\">Name<\/td>\n<td style=\"text-align: center;\">Type<\/td>\n<td style=\"text-align: center;\">Acknowledgment SLA<\/td>\n<td style=\"text-align: center;\">Ack Due By<\/td>\n<td style=\"text-align: center;\">Response SLA<\/td>\n<td style=\"text-align: center;\">Response Due By<\/td>\n<\/tr>\n<tr style=\"text-align: left; background-color: #d1d8dc;\">\n<td>{{vars.item['id']}}<\/td>\n<td>{{vars.item['name']}}<\/td>\n<td>{{vars.item['@type']}}<\/td>\n<td>{{vars.item['Acknowledgment SLA Status']}}<\/td>\n<td>{{vars.item['Ack Due By']}}<\/td>\n<td>{{vars.item['Response SLA Status']}}<\/td>\n<td>{{vars.item['Response Due By']}}<\/td>\n<\/tr>\n<\/tbody>\n<\/table>",
+                    "subject": "Incident SLA Breach status",
+                    "iri_list": "",
+                    "cc_recipients": "",
+                    "to_recipients": "{{vars.item.assignedTo.email}}",
+                    "bcc_recipients": "",
+                    "inline_iri_list": ""
+                },
+                "version": "4.0.0",
+                "for_each": {
+                    "item": "{{vars.alerts}}",
+                    "parallel": false,
+                    "condition": ""
+                },
+                "connector": "exchange",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "975",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "728015f5-9fb5-4e0c-ac56-11cfef61a934"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "step_variables": {
+                    "input": {
+                        "params": []
+                    }
+                }
+            },
+            "status": null,
+            "top": "30",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "group": null,
+            "uuid": "73fea0bb-b1c9-46e2-9ad0-d0147287b64f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Exclude Unbreeched SLAs",
+            "description": null,
+            "arguments": {
+                "__create_eligible_alerts": "{%for entry in vars.all_alerts%}\n{%if (entry.remaining_ack_time < vars.minutes_left) or (entry.remaining_ack_time < vars.minutes_left)%}\n{{vars.alerts.append(entry)}}\n{%endif%}\n{%endfor%}"
+            },
+            "status": null,
+            "top": "570",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "77929d5b-2eb2-4081-b372-9cc09f93ab91"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Send Notification Email",
+            "description": null,
+            "arguments": {
+                "name": "Exchange",
+                "when": "{{vars.alerts|length > 0}}",
+                "config": "9b1523e6-7f4a-4bd0-82fd-9ed0e2bae171",
+                "params": {
+                    "body": "<p>{{vars.body}}<\/p>",
+                    "subject": "Incident SLA Breach status",
+                    "iri_list": "",
+                    "cc_recipients": "",
+                    "to_recipients": "{{vars.email_recipient}}",
+                    "bcc_recipients": "",
+                    "inline_iri_list": ""
+                },
+                "version": "4.0.0",
+                "connector": "exchange",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1110",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "c544a173-765d-4327-a7aa-0847651cd452"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Announcement",
+            "description": null,
+            "arguments": {
+                "when": "{{vars.alerts | length > 0 and vars.create_announcement is true}}",
+                "resource": {
+                    "title": "Alert SLA Status",
+                    "__replace": "",
+                    "description": "<p>{{vars.body}}<\/p>",
+                    "notifyOnEmail": false,
+                    "announcementType": "\/api\/3\/picklists\/cfbb2798-ec01-4652-b774-fb2c19e35eb5",
+                    "announcementCriticality": "\/api\/3\/picklists\/e8e41070-f135-42f2-892b-7017cbba4024"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/announcements",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Overwrite"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1245",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "d753b4f9-ca68-46ce-af98-b39ddb18fc0b"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Incidents Attributes",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "logic": "AND",
+                            "filters": [
+                                {
+                                    "type": "datetime",
+                                    "logic": "AND",
+                                    "_field": "createDate",
+                                    "_value": {
+                                        "differenceType": "days",
+                                        "differenceValue": -1
+                                    },
+                                    "filters": [
+                                        {
+                                            "type": "datetime",
+                                            "field": "createDate",
+                                            "value": "{{getRelativeDate(0,0,-1,\"end\",\"end\",\"end\")}}",
+                                            "operator": "gt"
+                                        }
+                                    ],
+                                    "_operator": "gt"
+                                }
+                            ]
+                        },
+                        {
+                            "logic": "OR",
+                            "filters": [
+                                {
+                                    "type": "array",
+                                    "field": "slaState",
+                                    "value": [
+                                        "\/api\/3\/picklists\/72979f64-e8b9-4888-a965-957e0ec24818",
+                                        "\/api\/3\/picklists\/3654f428-d23d-4683-a44e-82cc54f4f32b"
+                                    ],
+                                    "module": "slaState",
+                                    "display": "",
+                                    "operator": "in",
+                                    "template": "multiselectpicklist",
+                                    "enableJinja": true,
+                                    "OPERATOR_KEY": "$",
+                                    "useInOperator": true,
+                                    "previousOperator": "in",
+                                    "previousTemplate": "multiselectpicklist"
+                                },
+                                {
+                                    "type": "datetime",
+                                    "field": "ackDate",
+                                    "value": "true",
+                                    "operator": "isnull"
+                                }
+                            ]
+                        },
+                        {
+                            "logic": "AND",
+                            "filters": [
+                                {
+                                    "type": "datetime",
+                                    "field": "ackDueDate",
+                                    "value": "false",
+                                    "operator": "isnull"
+                                },
+                                {
+                                    "type": "datetime",
+                                    "field": "resDueBy",
+                                    "value": "false",
+                                    "operator": "isnull"
+                                }
+                            ]
+                        }
+                    ],
+                    "__selectFields": [
+                        "name",
+                        "resDueBy",
+                        "ackDueDate",
+                        "id",
+                        "incidentLead"
+                    ]
+                },
+                "module": "incidents?$limit=99",
+                "checkboxFields": true,
+                "step_variables": {
+                    "all_alerts": "{{vars.result}}"
+                }
+            },
+            "status": null,
+            "top": "300",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "effdd9a6-2cba-4521-8d4d-1f0140cfe580"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Generate Email Body",
+            "description": null,
+            "arguments": {
+                "body": "<table style=\"border-collapse: collapse; width: 99.9951%; background-color: #1E3D67; border-color: #34495E; border-style: dotted;\" border=\"1\">\n<tbody>\n<tr>\n<td style=\"text-align: center;\">ID<\/td>\n<td style=\"text-align: center;\">Name<\/td>\n<td style=\"text-align: center;\">Type<\/td>\n<td style=\"text-align: center;\">Acknowledgment SLA<\/td>\n<td style=\"text-align: center;\">Ack Due By<\/td>\n<td style=\"text-align: center;\">Response SLA<\/td>\n<td style=\"text-align: center;\">Response Due By<\/td>\n<\/tr>    \n{%for entry in vars.alerts%}<tr style=\"text-align: left;background-color: #D1D8DC;\"><td>{{entry['id']}}<\/td><td>{{entry['name']}}<\/td><td>{{entry['@type']}}<\/td><td>{{entry['Acknowledgment SLA Status']}}<\/td><td>{{entry['Ack Due By']}}<\/td><td>{{entry['Response SLA Status']}}<\/td><td>{{entry['Response Due By']}}<\/td><\/tr>{%endfor%}\n<\/tbody>\n<\/table>"
+            },
+            "status": null,
+            "top": "975",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "f45befeb-54ec-46bc-92dd-d5fe5a1fafef"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Generate Email Body -> Send Email",
+            "targetStep": "\/api\/3\/workflow_steps\/c544a173-765d-4327-a7aa-0847651cd452",
+            "sourceStep": "\/api\/3\/workflow_steps\/f45befeb-54ec-46bc-92dd-d5fe5a1fafef",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "330e998f-45c2-41a7-b1bd-f1f108769d52"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Single Recipient -> Generate Email Body",
+            "targetStep": "\/api\/3\/workflow_steps\/f45befeb-54ec-46bc-92dd-d5fe5a1fafef",
+            "sourceStep": "\/api\/3\/workflow_steps\/1a565156-9e9d-45d6-b7a0-84fc00c3a6aa",
+            "label": "yes",
+            "isExecuted": false,
+            "uuid": "4c7bb533-ca23-4c07-9d39-169a309ec485"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Single Recipient -> Copy of Send Email",
+            "targetStep": "\/api\/3\/workflow_steps\/728015f5-9fb5-4e0c-ac56-11cfef61a934",
+            "sourceStep": "\/api\/3\/workflow_steps\/1a565156-9e9d-45d6-b7a0-84fc00c3a6aa",
+            "label": "no",
+            "isExecuted": false,
+            "uuid": "d7e3eef3-cd6b-4990-bf18-897c34db0476"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Send Notification Emails -> Create Announcement",
+            "targetStep": "\/api\/3\/workflow_steps\/5ccecbd5-b6cc-4cba-b86e-1013361e49b2",
+            "sourceStep": "\/api\/3\/workflow_steps\/728015f5-9fb5-4e0c-ac56-11cfef61a934",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "7fb64d35-436c-4561-8a84-5531fd86e62e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Send Notification Email -> Create Announcement",
+            "targetStep": "\/api\/3\/workflow_steps\/d753b4f9-ca68-46ce-af98-b39ddb18fc0b",
+            "sourceStep": "\/api\/3\/workflow_steps\/c544a173-765d-4327-a7aa-0847651cd452",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "fa96c762-729a-4e75-87ef-659317f5e36a"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/41a0e576-90e5-4714-b1ad-7ffab09f9236",
+            "sourceStep": "\/api\/3\/workflow_steps\/73fea0bb-b1c9-46e2-9ad0-d0147287b64f",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "0f31b271-4984-4f3f-95e4-872494203051"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get Alert Attributes",
+            "targetStep": "\/api\/3\/workflow_steps\/effdd9a6-2cba-4521-8d4d-1f0140cfe580",
+            "sourceStep": "\/api\/3\/workflow_steps\/41a0e576-90e5-4714-b1ad-7ffab09f9236",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "28a22e61-5b35-419e-a2c8-c7cefdbcf22f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Alert Attributes -> Compute Remaining Time",
+            "targetStep": "\/api\/3\/workflow_steps\/64e34513-614e-4191-9cff-e36c004fa97d",
+            "sourceStep": "\/api\/3\/workflow_steps\/effdd9a6-2cba-4521-8d4d-1f0140cfe580",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "9559ad2b-e3ab-4af6-a3f3-134cbb628ee7"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Compute Remaining Time -> Compute Eligible Alerts",
+            "targetStep": "\/api\/3\/workflow_steps\/77929d5b-2eb2-4081-b372-9cc09f93ab91",
+            "sourceStep": "\/api\/3\/workflow_steps\/64e34513-614e-4191-9cff-e36c004fa97d",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "365bf130-fa8e-4eaa-85ec-a9d9b068d92b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Exclude Unbreeched SLAs -> Compute Notification Bodies",
+            "targetStep": "\/api\/3\/workflow_steps\/0de7283b-1585-414a-b6ab-afaa5a1629cd",
+            "sourceStep": "\/api\/3\/workflow_steps\/77929d5b-2eb2-4081-b372-9cc09f93ab91",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "255f5094-0496-4520-b161-836cbaf72791"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Compute Notification Bodies -> Single Recipient",
+            "targetStep": "\/api\/3\/workflow_steps\/1a565156-9e9d-45d6-b7a0-84fc00c3a6aa",
+            "sourceStep": "\/api\/3\/workflow_steps\/0de7283b-1585-414a-b6ab-afaa5a1629cd",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "6dc793c6-9c08-44ba-a504-5e4e84cba336"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "uuid": "96c33793-4dbe-470a-bd41-d2466da522fb",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Use-Case",
+        "SLA-Notifier"
+    ]
+}

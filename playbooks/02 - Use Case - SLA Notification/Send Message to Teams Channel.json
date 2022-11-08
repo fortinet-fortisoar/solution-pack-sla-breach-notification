@@ -1,0 +1,175 @@
+{
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Send Message to Teams Channel",
+    "aliasName": null,
+    "tag": null,
+    "description": "Send message to channel",
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [
+        "channel_name",
+        "notification_message"
+    ],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/904b64ba-4c29-43c9-a46f-62e117bd4aa3",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/47b14e1a-981d-4bfe-a430-bfe28d4243cb",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "step_variables": {
+                    "input": {
+                        "params": []
+                    },
+                    "channel": "{}",
+                    "channel_name": "{{vars.input.params['channel_name']}}",
+                    "notification_msg": "{{vars.input.params['notification_message']}}"
+                }
+            },
+            "status": null,
+            "top": "30",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "group": null,
+            "uuid": "47b14e1a-981d-4bfe-a430-bfe28d4243cb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Channel Names",
+            "description": null,
+            "arguments": {
+                "name": "Microsoft Teams",
+                "config": "29f47464-a24a-4759-a0ee-3a2d96d5edbf",
+                "params": {
+                    "group_id": "{{vars.notification_teams_id}}",
+                    "channel_id": ""
+                },
+                "version": "1.0.1",
+                "connector": "microsoft-teams",
+                "operation": "get_channel",
+                "operationTitle": "Get Channel",
+                "pickFromTenant": false,
+                "step_variables": {
+                    "channels": "{{vars.result.data.value}}"
+                }
+            },
+            "status": null,
+            "top": "300",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "894fc6c6-411e-419f-8ae9-4ade73269ca3"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Send Message To Channel",
+            "description": null,
+            "arguments": {
+                "name": "Microsoft Teams",
+                "when": "{{vars.channel.details.id|length > 0 and vars.notification_msg|length > 0}}",
+                "config": "29f47464-a24a-4759-a0ee-3a2d96d5edbf",
+                "params": {
+                    "message": "{{vars.notification_msg}}",
+                    "group_id": "{{vars.notification_teams_id}}",
+                    "channel_id": "{{vars.channel.details.id}}"
+                },
+                "version": "1.0.1",
+                "connector": "microsoft-teams",
+                "operation": "send_message",
+                "operationTitle": "Send Message",
+                "pickFromTenant": false,
+                "step_variables": {
+                    "channels": "{{vars.result.data.value}}"
+                }
+            },
+            "status": null,
+            "top": "570",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "9795eed2-087e-4229-af11-d84a7bbfd754"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Channel ID",
+            "description": null,
+            "arguments": {
+                "_tmp": "{%for entry in vars.channels%}{%if entry.displayName in vars.channel_name%}{{vars.channel.update({'details':entry})}}{%endif%}{%endfor%}"
+            },
+            "status": null,
+            "top": "435",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "9e26f2ad-d7c0-428a-973e-ee8afc95a886"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "notification_teams_id": "4dbc9554-a4e5-40d5-87a9-f14c6ab1c392"
+            },
+            "status": null,
+            "top": "165",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "f806861b-4c69-4012-a7fe-f2867267273a"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/f806861b-4c69-4012-a7fe-f2867267273a",
+            "sourceStep": "\/api\/3\/workflow_steps\/47b14e1a-981d-4bfe-a430-bfe28d4243cb",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "53dc1934-1af7-45a0-b780-5301773e1446"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get Channel Names",
+            "targetStep": "\/api\/3\/workflow_steps\/894fc6c6-411e-419f-8ae9-4ade73269ca3",
+            "sourceStep": "\/api\/3\/workflow_steps\/f806861b-4c69-4012-a7fe-f2867267273a",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "368e0d99-1c1c-4baa-8aa7-33cb763fbf67"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Channel Names -> Get Channel ID",
+            "targetStep": "\/api\/3\/workflow_steps\/9e26f2ad-d7c0-428a-973e-ee8afc95a886",
+            "sourceStep": "\/api\/3\/workflow_steps\/894fc6c6-411e-419f-8ae9-4ade73269ca3",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "5917e96c-e463-4d7f-86bd-8d5fb98b78e8"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Channel ID -> Send Message To Channel",
+            "targetStep": "\/api\/3\/workflow_steps\/9795eed2-087e-4229-af11-d84a7bbfd754",
+            "sourceStep": "\/api\/3\/workflow_steps\/9e26f2ad-d7c0-428a-973e-ee8afc95a886",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "5652a74c-289e-487a-9734-40513b97cfbe"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "uuid": "a11cda29-209a-40ad-8d2f-651c226e26c6",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Use-Case",
+        "microsoft-teams"
+    ]
+}

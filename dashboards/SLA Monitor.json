@@ -1,0 +1,1173 @@
+{
+    "@context": "\/api\/3\/contexts\/Dashboard",
+    "@type": "Dashboard",
+    "uuid": "289eb979-2ad2-4285-94c4-1ff668526a47",
+    "displayName": "SLA Monitor",
+    "type": "rows",
+    "templateType": "dashboard",
+    "roles": [],
+    "parentTemplateId": null,
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "sectionHeader",
+                                "config": {
+                                    "wid": "4f6b30b6-1cba-4b52-9507-7d0e9791c990",
+                                    "query": {
+                                        "filters": [],
+                                        "sort": [],
+                                        "limit": 10
+                                    },
+                                    "editorType": "html",
+                                    "sectionText": "<h1><strong>Alerts SLA Status<\/strong><\/h1>"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "sectionHeader",
+                                "config": {
+                                    "wid": "959193ab-b135-4b1a-b6e8-97ea5f95c05f",
+                                    "query": {
+                                        "filters": [],
+                                        "sort": [],
+                                        "limit": 10
+                                    },
+                                    "editorType": "html",
+                                    "sectionText": "<h1><strong>Incident SLA Status<\/strong><\/h1>"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    }
+                ],
+                "wid": "980d6d04-623e-43dd-a825-362e636d0e25",
+                "_collapsed": false,
+                "collapsible": false,
+                "collapsibleIndex": 0
+            },
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "performanceMetrics",
+                                "config": {
+                                    "wid": "b2737c96-f909-4bf1-b685-3abcdb0e0f20",
+                                    "grouping": {
+                                        "primary": [],
+                                        "secondary": []
+                                    },
+                                    "showSavings": "dollar",
+                                    "includeFailedPlaybooks": true,
+                                    "excludeConfigActions": true,
+                                    "days": 1,
+                                    "showPercentageChanges": true,
+                                    "metricsType": "totalCount",
+                                    "title": "Acknowledgement SLA Met (Today)",
+                                    "resource": "alerts",
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c",
+                                                "_value": {
+                                                    "itemValue": "Met",
+                                                    "@id": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "timeRange": "dueBy",
+                                    "cardLayout": true,
+                                    "ratioResource": "alerts",
+                                    "ratioquery": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "operator": "neq",
+                                                "value": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c",
+                                                "_value": {
+                                                    "itemValue": "Met",
+                                                    "@id": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "ratiotimeRange": "dueBy"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "performanceMetrics",
+                                "config": {
+                                    "wid": "7c536422-2cc2-4414-98c5-cbda366652d5",
+                                    "grouping": {
+                                        "primary": [],
+                                        "secondary": []
+                                    },
+                                    "showSavings": "dollar",
+                                    "includeFailedPlaybooks": true,
+                                    "excludeConfigActions": true,
+                                    "days": 1,
+                                    "showPercentageChanges": true,
+                                    "metricsType": "totalCount",
+                                    "title": "Acknowledgement SLA Missed (Today)",
+                                    "resource": "alerts",
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "timeRange": "dueBy",
+                                    "cardLayout": true,
+                                    "ratioResource": "alerts",
+                                    "ratioquery": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "operator": "neq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "ratiotimeRange": "dueBy"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "performanceMetrics",
+                                "config": {
+                                    "wid": "909fd421-ca7c-41c1-94b5-226af03b3053",
+                                    "grouping": {
+                                        "primary": [],
+                                        "secondary": []
+                                    },
+                                    "showSavings": "dollar",
+                                    "includeFailedPlaybooks": true,
+                                    "excludeConfigActions": true,
+                                    "days": 1,
+                                    "showPercentageChanges": true,
+                                    "metricsType": "totalCount",
+                                    "title": "Acknowledgement SLA Met (Today) 1",
+                                    "resource": "incidents",
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "slaState",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c",
+                                                "_value": {
+                                                    "itemValue": "Met",
+                                                    "@id": "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "timeRange": "ackDueDate",
+                                    "cardLayout": true,
+                                    "ratioResource": "incidents",
+                                    "ratioquery": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "slaState",
+                                                "operator": "neq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "ratiotimeRange": "ackDueDate"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "performanceMetrics",
+                                "config": {
+                                    "wid": "91fdbbf6-c4b2-4b18-9265-4a27bb9f22e2",
+                                    "grouping": {
+                                        "primary": [],
+                                        "secondary": []
+                                    },
+                                    "showSavings": "dollar",
+                                    "includeFailedPlaybooks": true,
+                                    "excludeConfigActions": true,
+                                    "days": 1,
+                                    "showPercentageChanges": true,
+                                    "metricsType": "totalCount",
+                                    "title": "Acknowledgement SLA Missed (Today)",
+                                    "resource": "incidents",
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "slaState",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "timeRange": "ackDueDate",
+                                    "cardLayout": true,
+                                    "ratioResource": "incidents",
+                                    "ratioquery": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "slaState",
+                                                "operator": "neq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "ratiotimeRange": "ackDueDate"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    }
+                ],
+                "wid": "ded0f491-8447-4be4-b4ac-640f87d668a8",
+                "collapsible": false,
+                "collapsibleIndex": 0,
+                "_collapsed": false
+            },
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "chart",
+                                "config": {
+                                    "wid": "61e495b3-e250-495a-8abe-0dcc662fca25",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "field": "assignedTo.firstname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "assignedTo.lastname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "ackSlaStatus.orderIndex",
+                                                "direction": "ASC"
+                                            }
+                                        ],
+                                        "limit": 2147483647,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "field": "dueBy",
+                                                        "operator": "gte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"start\",\"start\",\"start\")}}",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "field": "dueBy",
+                                                        "operator": "lte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"end\",\"end\",\"end\")}}",
+                                                        "type": "datetime"
+                                                    }
+                                                ],
+                                                "_field": "dueBy",
+                                                "_value": {
+                                                    "differenceType": "days",
+                                                    "differenceValue": 0
+                                                },
+                                                "_operator": "date",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "value": [
+                                                    "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c",
+                                                    "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                ],
+                                                "display": "",
+                                                "operator": "in",
+                                                "type": "array",
+                                                "OPERATOR_KEY": "$",
+                                                "template": "multiselectpicklist",
+                                                "previousOperator": "in",
+                                                "previousTemplate": "multiselectpicklist",
+                                                "useInOperator": true,
+                                                "module": "ackSlaStatus"
+                                            },
+                                            {
+                                                "field": "assignedTo",
+                                                "operator": "isnull",
+                                                "value": "false",
+                                                "_value": {
+                                                    "display": "",
+                                                    "itemValue": "",
+                                                    "@id": "false"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "aggregates": [
+                                            {
+                                                "operator": "countdistinct",
+                                                "field": "*",
+                                                "alias": "total"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "assignedTo__firstname",
+                                                "field": "assignedTo.firstname"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "assignedTo__lastname",
+                                                "field": "assignedTo.lastname"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "assignedTo__uuid",
+                                                "field": "assignedTo.uuid"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "ackSlaStatus",
+                                                "field": "ackSlaStatus.itemValue"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "secondOrderIndex",
+                                                "field": "ackSlaStatus.orderIndex"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "color",
+                                                "field": "ackSlaStatus.color"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "firstGrouping": "assignedTo",
+                                        "secondGrouping": "ackSlaStatus"
+                                    },
+                                    "assignedToSetting": "onlyMe",
+                                    "aggregate": true,
+                                    "title": "SLA by User",
+                                    "resource": "alerts",
+                                    "chart": "bar",
+                                    "barStyle": "horizontal"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "chart",
+                                "config": {
+                                    "wid": "49a5214d-9fcf-49d5-b057-3d60d2ef455c",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "field": "assignedTo.firstname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "assignedTo.lastname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "severity.orderIndex",
+                                                "direction": "ASC"
+                                            }
+                                        ],
+                                        "limit": 2147483647,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "field": "dueBy",
+                                                        "operator": "gte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"start\",\"start\",\"start\")}}",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "field": "dueBy",
+                                                        "operator": "lte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"end\",\"end\",\"end\")}}",
+                                                        "type": "datetime"
+                                                    }
+                                                ],
+                                                "_field": "dueBy",
+                                                "_value": {
+                                                    "differenceType": "days",
+                                                    "differenceValue": 0
+                                                },
+                                                "_operator": "date",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "value": [
+                                                    "\/api\/3\/picklists\/72979f64-e8b9-4888-a965-957e0ec24818",
+                                                    "\/api\/3\/picklists\/3f4ef2dc-7f56-4886-b215-ee08b344cbdf"
+                                                ],
+                                                "display": "",
+                                                "operator": "in",
+                                                "type": "array",
+                                                "OPERATOR_KEY": "$",
+                                                "template": "multiselectpicklist",
+                                                "previousOperator": "in",
+                                                "previousTemplate": "multiselectpicklist",
+                                                "useInOperator": true,
+                                                "module": "ackSlaStatus"
+                                            },
+                                            {
+                                                "field": "assignedTo",
+                                                "operator": "isnull",
+                                                "value": "false",
+                                                "_value": {
+                                                    "display": "",
+                                                    "itemValue": "",
+                                                    "@id": "false"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "aggregates": [
+                                            {
+                                                "operator": "countdistinct",
+                                                "field": "*",
+                                                "alias": "total"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "assignedTo__firstname",
+                                                "field": "assignedTo.firstname"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "assignedTo__lastname",
+                                                "field": "assignedTo.lastname"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "assignedTo__uuid",
+                                                "field": "assignedTo.uuid"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "severity",
+                                                "field": "severity.itemValue"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "secondOrderIndex",
+                                                "field": "severity.orderIndex"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "color",
+                                                "field": "severity.color"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "firstGrouping": "assignedTo",
+                                        "secondGrouping": "severity"
+                                    },
+                                    "assignedToSetting": "onlyMe",
+                                    "aggregate": true,
+                                    "title": "Queued Tickets by Severity",
+                                    "resource": "alerts",
+                                    "chart": "bar",
+                                    "barStyle": "vertical"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "chart",
+                                "config": {
+                                    "wid": "aceb25a4-9bba-4dce-ab62-787fd7493e5a",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "field": "incidentLead.firstname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "incidentLead.lastname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "slaState.orderIndex",
+                                                "direction": "ASC"
+                                            }
+                                        ],
+                                        "limit": 2147483647,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "field": "ackDueDate",
+                                                        "operator": "gte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"start\",\"start\",\"start\")}}",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "field": "ackDueDate",
+                                                        "operator": "lte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"end\",\"end\",\"end\")}}",
+                                                        "type": "datetime"
+                                                    }
+                                                ],
+                                                "_field": "ackDueDate",
+                                                "_value": {
+                                                    "differenceType": "days",
+                                                    "differenceValue": 0
+                                                },
+                                                "_operator": "date",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "field": "slaState",
+                                                "value": [
+                                                    "\/api\/3\/picklists\/090115d7-90fc-4dc6-97ca-27950fc30c1c",
+                                                    "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                ],
+                                                "display": "",
+                                                "operator": "in",
+                                                "type": "array",
+                                                "OPERATOR_KEY": "$",
+                                                "template": "multiselectpicklist",
+                                                "previousOperator": "in",
+                                                "previousTemplate": "multiselectpicklist",
+                                                "useInOperator": true,
+                                                "module": "slaState"
+                                            },
+                                            {
+                                                "field": "incidentLead",
+                                                "operator": "isnull",
+                                                "value": "false",
+                                                "_value": {
+                                                    "display": "",
+                                                    "itemValue": "",
+                                                    "@id": "false"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "aggregates": [
+                                            {
+                                                "operator": "countdistinct",
+                                                "field": "*",
+                                                "alias": "total"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "incidentLead__firstname",
+                                                "field": "incidentLead.firstname"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "incidentLead__lastname",
+                                                "field": "incidentLead.lastname"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "incidentLead__uuid",
+                                                "field": "incidentLead.uuid"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "slaState",
+                                                "field": "slaState.itemValue"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "secondOrderIndex",
+                                                "field": "slaState.orderIndex"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "color",
+                                                "field": "slaState.color"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "firstGrouping": "incidentLead",
+                                        "secondGrouping": "slaState"
+                                    },
+                                    "assignedToSetting": "onlyMe",
+                                    "aggregate": true,
+                                    "title": "SLA by User",
+                                    "resource": "incidents",
+                                    "chart": "bar",
+                                    "barStyle": "horizontal"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "chart",
+                                "config": {
+                                    "wid": "33388d7b-573d-46f9-947e-afc819b16dbc",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "field": "incidentLead.firstname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "incidentLead.lastname",
+                                                "direction": "ASC"
+                                            },
+                                            {
+                                                "field": "severity.orderIndex",
+                                                "direction": "ASC"
+                                            }
+                                        ],
+                                        "limit": 2147483647,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "field": "ackDueDate",
+                                                        "operator": "gte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"start\",\"start\",\"start\")}}",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "field": "ackDueDate",
+                                                        "operator": "lte",
+                                                        "value": "{{getRelativeDate(0,0,0,\"end\",\"end\",\"end\")}}",
+                                                        "type": "datetime"
+                                                    }
+                                                ],
+                                                "_field": "ackDueDate",
+                                                "_value": {
+                                                    "differenceType": "days",
+                                                    "differenceValue": 0
+                                                },
+                                                "_operator": "date",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "field": "slaState",
+                                                "value": [
+                                                    "\/api\/3\/picklists\/72979f64-e8b9-4888-a965-957e0ec24818",
+                                                    "\/api\/3\/picklists\/3654f428-d23d-4683-a44e-82cc54f4f32b",
+                                                    "\/api\/3\/picklists\/3f4ef2dc-7f56-4886-b215-ee08b344cbdf"
+                                                ],
+                                                "display": "",
+                                                "operator": "in",
+                                                "type": "array",
+                                                "OPERATOR_KEY": "$",
+                                                "template": "multiselectpicklist",
+                                                "previousOperator": "in",
+                                                "previousTemplate": "multiselectpicklist",
+                                                "useInOperator": true,
+                                                "module": "slaState"
+                                            },
+                                            {
+                                                "field": "incidentLead",
+                                                "operator": "isnull",
+                                                "value": "false",
+                                                "_value": {
+                                                    "display": "",
+                                                    "itemValue": "",
+                                                    "@id": "false"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "aggregates": [
+                                            {
+                                                "operator": "countdistinct",
+                                                "field": "*",
+                                                "alias": "total"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "incidentLead__firstname",
+                                                "field": "incidentLead.firstname"
+                                            },
+                                            {
+                                                "operator": "select",
+                                                "alias": "incidentLead__lastname",
+                                                "field": "incidentLead.lastname"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "incidentLead__uuid",
+                                                "field": "incidentLead.uuid"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "severity",
+                                                "field": "severity.itemValue"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "secondOrderIndex",
+                                                "field": "severity.orderIndex"
+                                            },
+                                            {
+                                                "operator": "groupby",
+                                                "alias": "color",
+                                                "field": "severity.color"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "firstGrouping": "incidentLead",
+                                        "secondGrouping": "severity"
+                                    },
+                                    "assignedToSetting": "onlyMe",
+                                    "aggregate": true,
+                                    "title": "Queued Tickets by Severity",
+                                    "resource": "incidents",
+                                    "chart": "bar",
+                                    "barStyle": "vertical"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-3"
+                    }
+                ],
+                "wid": "0dcf4b1f-8b9c-4f71-a1ee-631eab7789b9",
+                "collapsible": false,
+                "collapsibleIndex": 0,
+                "_collapsed": false
+            },
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "simpleGrid",
+                                "config": {
+                                    "wid": "1416395b-297b-42b8-85fd-d4419bde8fb7",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "direction": "ASC",
+                                                "field": "dueBy",
+                                                "_fieldTitle": "Ack Due Date",
+                                                "_fieldName": "dueBy"
+                                            }
+                                        ],
+                                        "limit": 10,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "OR",
+                                                "filters": [
+                                                    {
+                                                        "field": "ackSlaStatus",
+                                                        "value": [
+                                                            "\/api\/3\/picklists\/72979f64-e8b9-4888-a965-957e0ec24818",
+                                                            "\/api\/3\/picklists\/3654f428-d23d-4683-a44e-82cc54f4f32b"
+                                                        ],
+                                                        "display": "",
+                                                        "operator": "in",
+                                                        "type": "array",
+                                                        "OPERATOR_KEY": "$",
+                                                        "template": "multiselectpicklist",
+                                                        "previousOperator": "in",
+                                                        "previousTemplate": "multiselectpicklist",
+                                                        "useInOperator": true,
+                                                        "module": "ackSlaStatus"
+                                                    },
+                                                    {
+                                                        "field": "ackSlaStatus",
+                                                        "operator": "isnull",
+                                                        "value": "true",
+                                                        "_value": {
+                                                            "display": "",
+                                                            "itemValue": "",
+                                                            "@id": "true"
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "logic": "AND",
+                                                        "filters": [
+                                                            {
+                                                                "field": "dueBy",
+                                                                "operator": "gte",
+                                                                "value": "{{getRelativeDate(0,0,0,0,0,0)}}",
+                                                                "type": "datetime"
+                                                            },
+                                                            {
+                                                                "field": "dueBy",
+                                                                "operator": "lte",
+                                                                "value": "{{getRelativeDate(0,0,0,0,30,\"end\")}}",
+                                                                "type": "datetime"
+                                                            }
+                                                        ],
+                                                        "_field": "dueBy",
+                                                        "_value": {
+                                                            "differenceType": "mins",
+                                                            "differenceValue": 30
+                                                        },
+                                                        "_operator": "date",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "logic": "AND",
+                                                        "filters": [
+                                                            {
+                                                                "field": "dueBy",
+                                                                "operator": "gt",
+                                                                "value": "{{getRelativeDate(0,0,0,0,1,\"end\")}}",
+                                                                "type": "datetime"
+                                                            }
+                                                        ],
+                                                        "_field": "dueBy",
+                                                        "_value": {
+                                                            "differenceType": "mins",
+                                                            "differenceValue": 1
+                                                        },
+                                                        "_operator": "gt",
+                                                        "type": "datetime"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "assignedToPerson": ""
+                                    },
+                                    "columns": [
+                                        "name",
+                                        "assignedTo",
+                                        "ackSlaStatus",
+                                        "dueBy",
+                                        "respSlaStatus",
+                                        "respDueDate"
+                                    ],
+                                    "title": "Acknowledgement SLAs (Next 30 Min)",
+                                    "module": "alerts"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "simpleGrid",
+                                "config": {
+                                    "wid": "0312fc35-4fe7-48c8-a091-ea0d289fd151",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 10,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "logic": "OR",
+                                                "filters": [
+                                                    {
+                                                        "field": "slaState",
+                                                        "value": [
+                                                            "\/api\/3\/picklists\/72979f64-e8b9-4888-a965-957e0ec24818",
+                                                            "\/api\/3\/picklists\/3654f428-d23d-4683-a44e-82cc54f4f32b"
+                                                        ],
+                                                        "display": "",
+                                                        "operator": "in",
+                                                        "type": "array",
+                                                        "OPERATOR_KEY": "$",
+                                                        "template": "multiselectpicklist",
+                                                        "previousOperator": "in",
+                                                        "previousTemplate": "multiselectpicklist",
+                                                        "useInOperator": true,
+                                                        "module": "slaState"
+                                                    },
+                                                    {
+                                                        "field": "slaState",
+                                                        "operator": "isnull",
+                                                        "value": "true",
+                                                        "_value": {
+                                                            "display": "",
+                                                            "itemValue": "",
+                                                            "@id": "true"
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "logic": "AND",
+                                                "filters": [
+                                                    {
+                                                        "logic": "AND",
+                                                        "filters": [
+                                                            {
+                                                                "field": "ackDueDate",
+                                                                "operator": "gte",
+                                                                "value": "{{getRelativeDate(0,0,0,0,0,0)}}",
+                                                                "type": "datetime"
+                                                            },
+                                                            {
+                                                                "field": "ackDueDate",
+                                                                "operator": "lte",
+                                                                "value": "{{getRelativeDate(0,0,0,0,30,\"end\")}}",
+                                                                "type": "datetime"
+                                                            }
+                                                        ],
+                                                        "_field": "ackDueDate",
+                                                        "_value": {
+                                                            "differenceType": "mins",
+                                                            "differenceValue": 30
+                                                        },
+                                                        "_operator": "date",
+                                                        "type": "datetime"
+                                                    },
+                                                    {
+                                                        "logic": "AND",
+                                                        "filters": [
+                                                            {
+                                                                "field": "ackDueDate",
+                                                                "operator": "gt",
+                                                                "value": "{{getRelativeDate(0,0,0,0,1,\"end\")}}",
+                                                                "type": "datetime"
+                                                            }
+                                                        ],
+                                                        "_field": "ackDueDate",
+                                                        "_value": {
+                                                            "differenceType": "mins",
+                                                            "differenceValue": 1
+                                                        },
+                                                        "_operator": "gt",
+                                                        "type": "datetime"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "assignedToPerson": ""
+                                    },
+                                    "columns": [
+                                        "name",
+                                        "incidentLead",
+                                        "slaState",
+                                        "ackDueDate",
+                                        "resSla",
+                                        "resDueBy"
+                                    ],
+                                    "title": "Acknowledgement SLAs (Next 30 Min)",
+                                    "module": "incidents"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    }
+                ],
+                "wid": "f89ad6bc-ccf6-4846-b5a5-d561e41e8f55",
+                "collapsible": false,
+                "collapsibleIndex": 0,
+                "_collapsed": false
+            },
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "simpleGrid",
+                                "config": {
+                                    "wid": "2a1056e6-4b2f-4be6-9e43-d9cf3ce397b7",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 10,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "ackSlaStatus",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "assignedToPerson": ""
+                                    },
+                                    "columns": [
+                                        "name",
+                                        "assignedTo",
+                                        "ackSlaStatus",
+                                        "dueBy",
+                                        "respSlaStatus",
+                                        "respDueDate"
+                                    ],
+                                    "title": "Breached Acknowledgement SLAs (Past 7 Days)",
+                                    "module": "alerts"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "simpleGrid",
+                                "config": {
+                                    "wid": "5af24871-03b2-4021-a376-af2109dc7704",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 10,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "slaState",
+                                                "operator": "eq",
+                                                "value": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34",
+                                                "_value": {
+                                                    "itemValue": "Missed",
+                                                    "@id": "\/api\/3\/picklists\/5230b20c-d408-4b36-ad8f-610167d84d34"
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
+                                    },
+                                    "mapping": {
+                                        "assignedToPerson": ""
+                                    },
+                                    "columns": [
+                                        "name",
+                                        "incidentLead",
+                                        "slaState",
+                                        "ackDueDate",
+                                        "resSla"
+                                    ],
+                                    "title": "Breached Acknowledgement SLAs (Past 7 Days)",
+                                    "module": "incidents"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
+                    }
+                ],
+                "wid": "de9bbf0f-78ff-439f-bea1-504f9ab6729d",
+                "collapsible": false,
+                "collapsibleIndex": 0,
+                "_collapsed": false
+            }
+        ],
+        "wid": "4a7c02ee-ee04-4be7-920b-8627a56b8635",
+        "metadata": {
+            "customTemplateTitle": "Dashboard"
+        }
+    },
+    "filterArray": [],
+    "updateDate": null
+}
