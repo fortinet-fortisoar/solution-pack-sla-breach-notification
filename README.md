@@ -14,5 +14,5 @@ A set of playbooks meant to run periodically to notify users with:
 
 # Next Steps
 
-| [Installation](docs/README.md) | [Configuration](docs/README.md) | [Usage](docs/setup.md) | [Contents](docs/contents.md) |
+| [Installation](docs/setup.md) | [Configuration](docs/setup.md) | [Usage](docs/usage.md) | [Contents](docs/contents.md) |
 |--------------------------------------------|----------------------------------------------|------------------------|------------------------------|
