@@ -1,4 +1,4 @@
-| [Home](https://github.com/fortinet-fortisoar/solution-pack-sla-notification/blob/release/1.0.0/README.md) |
+| [Home](../README.md) |
 |--------------------------------------------|
 
 # Usage
