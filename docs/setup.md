@@ -1,10 +1,15 @@
-# SLA Notification:
-A set of playbooks meant to run periodically to notify users with:
+| [Home](https://github.com/fortinet-fortisoar/solution-pack-sla-notification/blob/release/1.0.0/README.md) |
+|--------------------------------------------|
 
-- Alerts and Incidents nearing an Acknowledgement SLA breach
-- Alerts and Incidents with Acknowledgement SLA breached
+# Installation
 
-Users are notified by email (MS Exchange connector) and via Teams channel
+1. To install a solution pack, click **Content Hub** > **Discover**.
+2. From the list of solution pack that appears, search for and select **SLA Notification**.
+3. Click the **SLA Notification** solution pack card.
+4. Click **Install** on the bottom to begin installation.
+
+## Prerequisites
+**Not Applicable**
 
 ## Configuration:
 - Configuration step **@Incidents SLA Notification:** playbook
