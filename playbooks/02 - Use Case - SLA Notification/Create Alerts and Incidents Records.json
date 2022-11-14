@@ -20,7 +20,7 @@
             "name": "Output",
             "description": null,
             "arguments": {
-                "records": "{{vars.steps.Find_Created_Incidents | union(vars.steps.Find_Created_Alerts)}}"
+                "@id": "{{vars.steps.Find_Created_Incidents | union(vars.steps.Find_Created_Alerts)}}"
             },
             "status": null,
             "top": "1110",

@@ -23,11 +23,27 @@
                 "_update_attributes": "{% set red_color='<font color = \"red\"><strong>{}<\/strong><\/font>' %}\n{% set orange_color='<font color = \"orange\"><strong>{}<\/strong><\/font>' %}\n{% macro build_ack_sla_msg(alert) %}{{orange_color.format(alert.remaining_ack_time) ~ '\\' Before Ack SLA breach' if alert.remaining_ack_time > 0 else red_color.format(alert.remaining_ack_time) ~ '\\' since Ack SLA breach'}}{% endmacro %}\n{% macro build_res_sla_msg(alert) %}{{orange_color.format(alert.remaining_response_time) ~ '\\' Before Res SLA breach' if alert.remaining_response_time > 0 else red_color.format(alert.remaining_response_time) ~ '\\' Since Res SLA breach'}}{% endmacro %}\n\n{%for entry in vars.alerts%}\n{{ entry.update({'Acknowledgment SLA Status':build_ack_sla_msg(entry)}) }}\n{{ entry.update({'Response SLA Status':build_res_sla_msg(entry)}) }}\n{{ entry.update({'Ack Due By':arrow.get(entry.ackDueDate).to(\"UTC\").format(\"DD\/MMM HH:mm\")}) }}\n{{ entry.update({'Response Due By':arrow.get(entry.resDueBy).to(\"UTC\").format(\"DD\/MMM HH:mm\")}) }}\n{{ entry.update({'Assigned To':entry.incidentLead.email})}}\n{%endfor%}"
             },
             "status": null,
-            "top": "705",
-            "left": "300",
+            "top": "1245",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "0de7283b-1585-414a-b6ab-afaa5a1629cd"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": "- minutes_left: Configure the number of minutes left before the notification is sent\n- email_recipient: if set it will be the recipient of all notifications, else the record owner will receive it\n- create_announcement: if set to True, an announcement record will be created which can be used as a trigger for a standard FortiSOAR notification",
+            "arguments": {
+                "alerts": "[]",
+                "sla_config": "{{globalVars.SLA_Notification_Config}}",
+                "sla_notification_global_var_name": "SLA_Notification_Config"
+            },
+            "status": null,
+            "top": "165",
+            "left": "393",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "128f1e3f-932c-48b2-a9ef-bf58143291e0"
         },
         {
             "@type": "WorkflowStep",
@@ -50,28 +66,33 @@
                 ]
             },
             "status": null,
-            "top": "840",
-            "left": "300",
+            "top": "1380",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
             "uuid": "1a565156-9e9d-45d6-b7a0-84fc00c3a6aa"
         },
         {
             "@type": "WorkflowStep",
-            "name": "Configuration",
-            "description": "- minutes_left: Configure the number of minutes left before the notification is sent\n- email_recipient: if set it will be the recipient of all notifications, else the record owner will receive it\n- create_announcement: if set to True, an announcement record will be created which can be used as a trigger for a standard FortiSOAR notification",
+            "name": "Notify Teams Channel",
+            "description": null,
             "arguments": {
-                "alerts": "[]",
-                "minutes_left": "10",
-                "email_recipient": "asmith@o365.fortielab.com",
-                "create_announcement": "True"
+                "when": "{{vars.alerts|length > 0 and vars.channel_name|length >0}}",
+                "arguments": {
+                    "channel_name": "{{vars.channel_name}}",
+                    "notification_message": "{{vars.teams_mesasge_body}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/a11cda29-209a-40ad-8d2f-651c226e26c6"
             },
             "status": null,
-            "top": "160",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "top": "1920",
+            "left": "218",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
             "group": null,
-            "uuid": "41a0e576-90e5-4714-b1ad-7ffab09f9236"
+            "uuid": "1b730e2d-1686-462e-8b2d-8da5ef5c35f3"
         },
         {
             "@type": "WorkflowStep",
@@ -102,8 +123,8 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "1110",
-            "left": "475",
+            "top": "1650",
+            "left": "568",
             "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
             "group": null,
             "uuid": "5ccecbd5-b6cc-4cba-b86e-1013361e49b2"
@@ -116,11 +137,129 @@
                 "_remaining_time": "{%for entry in vars.all_alerts%}\n{{entry.update({\"remaining_ack_time\":((entry.ackDueDate - arrow.now().int_timestamp)\/60)|round(0, 'ceil'),\"remaining_response_time\":((entry.resDueBy - arrow.now().int_timestamp)\/60)|round(0, 'ceil')})}}\n{%endfor%}"
             },
             "status": null,
-            "top": "435",
-            "left": "300",
+            "top": "975",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "64e34513-614e-4191-9cff-e36c004fa97d"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set SLA Notification Method",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Configuration",
+                        "description": "**Notification recipient:**\n\n- Recipient Email Address: The notification will be sent to an email address you specifyin the **Recipient email address** field. If you leave it blank the the notification will be sent to the assigned analyst in the record\n\n**MS Teams Group:**\n\n- If set an SLA notification message will be sent to the group specified in the field: MS Teams Group. If no group name is provided the MS Teams notification will be disabled\n\n**Create Announcements:**\n\n- The announcements records are created for each notifications allowing you to use it as a trigger for a system notification.",
+                        "inputVariables": [
+                            {
+                                "name": "recipientEmailAddress",
+                                "type": "string",
+                                "label": "Recipient Email Address",
+                                "tooltip": "",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": false,
+                                "defaultValue": null,
+                                "_previousName": "recipient",
+                                "useRecordFieldDefault": false
+                            },
+                            {
+                                "name": "mSTeamsChannelName",
+                                "type": "string",
+                                "label": "MS Teams Channel Name",
+                                "tooltip": "",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": false,
+                                "_expanded": false,
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "useRecordFieldDefault": false
+                            },
+                            {
+                                "name": "createAnnouncements",
+                                "type": "boolean",
+                                "label": "Create Announcements",
+                                "title": "Checkbox",
+                                "usable": true,
+                                "tooltip": "",
+                                "dataType": "checkbox",
+                                "formType": "checkbox",
+                                "required": false,
+                                "_expanded": false,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/checkbox.html",
+                                "defaultValue": null,
+                                "_previousName": "createAnnouncement",
+                                "lengthConstraint": false,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false
+                            },
+                            {
+                                "name": "minutesToSLABreach",
+                                "type": "integer",
+                                "label": "Minutes To SLA Breach",
+                                "title": "Integer Field",
+                                "usable": true,
+                                "tooltip": "",
+                                "dataType": "integer",
+                                "formType": "integer",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/integer.html",
+                                "defaultValue": 10,
+                                "_previousName": "minutesToSLA",
+                                "lengthConstraint": true,
+                                "allowedEncryption": false,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false
+                            }
+                        ]
+                    }
+                },
+                "record": "",
+                "owner_detail": {
+                    "isAssigned": false
+                },
+                "isRecordLinked": false,
+                "step_variables": {
+                    "sla_config": "{\n\"createAnnouncements\":\"{{vars.result.input.createAnnouncements}}\",\n\"minutesToSLABreach\":\"{{vars.result.input.minutesToSLABreach}}\",\n\"mSTeamsChannelName\":\"{{vars.result.input.mSTeamsChannelName}}\",\n\"recipientEmailAddress\":\"{{vars.result.input.recipientEmailAddress}}\"\n}"
+                },
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "Save",
+                            "primary": true,
+                            "step_iri": "\/api\/3\/workflow_steps\/c3bc72cb-ebec-49b9-81c0-5732d248a6e2"
+                        },
+                        {
+                            "option": "Cancel",
+                            "step_iri": "\/api\/3\/workflow_steps\/aef2a68c-74e4-4c1a-9963-9b7b0b287a64"
+                        }
+                    ],
+                    "duplicateOption": false
+                },
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                }
+            },
+            "status": null,
+            "top": "420",
+            "left": "860",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "71d999c5-00c4-49cb-a81b-40ba3d551eee"
         },
         {
             "@type": "WorkflowStep",
@@ -152,8 +291,8 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "975",
-            "left": "475",
+            "top": "1515",
+            "left": "568",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "728015f5-9fb5-4e0c-ac56-11cfef61a934"
@@ -171,7 +310,7 @@
             },
             "status": null,
             "top": "30",
-            "left": "300",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
             "group": null,
             "uuid": "73fea0bb-b1c9-46e2-9ad0-d0147287b64f"
@@ -184,11 +323,70 @@
                 "__create_eligible_alerts": "{%for entry in vars.all_alerts%}\n{%if (entry.remaining_ack_time < vars.minutes_left) or (entry.remaining_ack_time < vars.minutes_left)%}\n{{vars.alerts.append(entry)}}\n{%endif%}\n{%endfor%}"
             },
             "status": null,
-            "top": "570",
-            "left": "300",
+            "top": "1110",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "77929d5b-2eb2-4081-b372-9cc09f93ab91"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get PLaybook Configuration",
+            "description": "- minutes_left: Configure the number of minutes left before the notification is sent\n- email_recipient: if set it will be the recipient of all notifications, else the record owner will receive it\n- create_announcement: if set to True, an announcement record will be created which can be used as a trigger for a standard FortiSOAR notification",
+            "arguments": {
+                "alerts": "[]",
+                "channel_name": "{{vars.sla_config.mSTeamsChannelName}}",
+                "minutes_left": "{{vars.sla_config.minutesToSLABreach}}",
+                "email_recipient": "{{vars.sla_config.recipientEmailAddress}}",
+                "create_announcement": "{{vars.sla_config.createAnnouncements}}"
+            },
+            "status": null,
+            "top": "705",
+            "left": "393",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "8601dadf-d374-4ef1-8178-350ec4c3511d"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "No Configuraiton Set",
+            "description": null,
+            "arguments": {
+                "params": [],
+                "version": "3.2.1",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "560",
+            "left": "1040",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "aef2a68c-74e4-4c1a-9963-9b7b0b287a64"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Configuration Global Vars",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "macro": "{{vars.sla_notification_global_var_name}}",
+                    "value": "{{vars.sla_config|toJSON}}"
+                },
+                "version": "3.2.1",
+                "connector": "cyops_utilities",
+                "operation": "updatemacro",
+                "operationTitle": "FSR: Create\/Update Global Variables",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "560",
+            "left": "700",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "c3bc72cb-ebec-49b9-81c0-5732d248a6e2"
         },
         {
             "@type": "WorkflowStep",
@@ -215,8 +413,8 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "1110",
-            "left": "125",
+            "top": "1650",
+            "left": "218",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "c544a173-765d-4327-a7aa-0847651cd452"
@@ -244,11 +442,38 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "1245",
-            "left": "125",
+            "top": "1785",
+            "left": "218",
             "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
             "group": null,
             "uuid": "d753b4f9-ca68-46ce-af98-b39ddb18fc0b"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Playbook Configured",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/8601dadf-d374-4ef1-8178-350ec4c3511d",
+                        "condition": "{{ vars.sla_config is not none and 'minutesToSLABreach' in vars.sla_config }}",
+                        "step_name": "Get PLaybook Configuration"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/71d999c5-00c4-49cb-a81b-40ba3d551eee",
+                        "step_name": "Set SLA Notification Method"
+                    }
+                ]
+            },
+            "status": null,
+            "top": "300",
+            "left": "393",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "dc644e8d-8bee-4834-a605-642aa6318ccd"
         },
         {
             "@type": "WorkflowStep",
@@ -344,8 +569,8 @@
                 }
             },
             "status": null,
-            "top": "300",
-            "left": "300",
+            "top": "840",
+            "left": "393",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "effdd9a6-2cba-4521-8d4d-1f0140cfe580"
@@ -358,14 +583,32 @@
                 "body": "<table style=\"border-collapse: collapse; width: 99.9951%; background-color: #1E3D67; border-color: #34495E; border-style: dotted;\" border=\"1\">\n<tbody>\n<tr>\n<td style=\"text-align: center;\">ID<\/td>\n<td style=\"text-align: center;\">Name<\/td>\n<td style=\"text-align: center;\">Type<\/td>\n<td style=\"text-align: center;\">Acknowledgment SLA<\/td>\n<td style=\"text-align: center;\">Ack Due By<\/td>\n<td style=\"text-align: center;\">Response SLA<\/td>\n<td style=\"text-align: center;\">Response Due By<\/td>\n<\/tr>    \n{%for entry in vars.alerts%}<tr style=\"text-align: left;background-color: #D1D8DC;\"><td>{{entry['id']}}<\/td><td>{{entry['name']}}<\/td><td>{{entry['@type']}}<\/td><td>{{entry['Acknowledgment SLA Status']}}<\/td><td>{{entry['Ack Due By']}}<\/td><td>{{entry['Response SLA Status']}}<\/td><td>{{entry['Response Due By']}}<\/td><\/tr>{%endfor%}\n<\/tbody>\n<\/table>"
             },
             "status": null,
-            "top": "975",
-            "left": "125",
+            "top": "1515",
+            "left": "218",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "f45befeb-54ec-46bc-92dd-d5fe5a1fafef"
         }
     ],
     "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Announcement -> Notify Teams Channel",
+            "targetStep": "\/api\/3\/workflow_steps\/1b730e2d-1686-462e-8b2d-8da5ef5c35f3",
+            "sourceStep": "\/api\/3\/workflow_steps\/d753b4f9-ca68-46ce-af98-b39ddb18fc0b",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "814a7146-602f-425e-bdb6-e666813be1f9"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get PLaybook Configuration -> Get Incidents Attributes",
+            "targetStep": "\/api\/3\/workflow_steps\/effdd9a6-2cba-4521-8d4d-1f0140cfe580",
+            "sourceStep": "\/api\/3\/workflow_steps\/8601dadf-d374-4ef1-8178-350ec4c3511d",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "0bd98ce4-e048-414b-86a2-38ecba7d357a"
+        },
         {
             "@type": "WorkflowRoute",
             "name": "Generate Email Body -> Send Email",
@@ -413,24 +656,6 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/41a0e576-90e5-4714-b1ad-7ffab09f9236",
-            "sourceStep": "\/api\/3\/workflow_steps\/73fea0bb-b1c9-46e2-9ad0-d0147287b64f",
-            "label": null,
-            "isExecuted": false,
-            "uuid": "0f31b271-4984-4f3f-95e4-872494203051"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Configuration -> Get Alert Attributes",
-            "targetStep": "\/api\/3\/workflow_steps\/effdd9a6-2cba-4521-8d4d-1f0140cfe580",
-            "sourceStep": "\/api\/3\/workflow_steps\/41a0e576-90e5-4714-b1ad-7ffab09f9236",
-            "label": null,
-            "isExecuted": false,
-            "uuid": "28a22e61-5b35-419e-a2c8-c7cefdbcf22f"
-        },
-        {
-            "@type": "WorkflowRoute",
             "name": "Get Alert Attributes -> Compute Remaining Time",
             "targetStep": "\/api\/3\/workflow_steps\/64e34513-614e-4191-9cff-e36c004fa97d",
             "sourceStep": "\/api\/3\/workflow_steps\/effdd9a6-2cba-4521-8d4d-1f0140cfe580",
@@ -464,6 +689,69 @@
             "label": null,
             "isExecuted": false,
             "uuid": "6dc793c6-9c08-44ba-a504-5e4e84cba336"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set SLA Notification Method -> Create Configuration Global Vars",
+            "targetStep": "\/api\/3\/workflow_steps\/c3bc72cb-ebec-49b9-81c0-5732d248a6e2",
+            "sourceStep": "\/api\/3\/workflow_steps\/71d999c5-00c4-49cb-a81b-40ba3d551eee",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "02b0ed6b-e8e0-4a3c-80c7-9c9701af052b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Copy of Configuration -> Playbook Configured",
+            "targetStep": "\/api\/3\/workflow_steps\/dc644e8d-8bee-4834-a605-642aa6318ccd",
+            "sourceStep": "\/api\/3\/workflow_steps\/128f1e3f-932c-48b2-a9ef-bf58143291e0",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "003e9a8f-a133-4286-b72f-9ab2a60af567"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Playbook Configured -> Set SLA Notification Method",
+            "targetStep": "\/api\/3\/workflow_steps\/71d999c5-00c4-49cb-a81b-40ba3d551eee",
+            "sourceStep": "\/api\/3\/workflow_steps\/dc644e8d-8bee-4834-a605-642aa6318ccd",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "808de740-deba-46b4-866f-ba17f6c58058"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Playbook Configured -> Get PLaybook Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/8601dadf-d374-4ef1-8178-350ec4c3511d",
+            "sourceStep": "\/api\/3\/workflow_steps\/dc644e8d-8bee-4834-a605-642aa6318ccd",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "f7129ba3-cbef-46f1-ab8c-5f47564b431d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Configuration Global Vars -> Get PLaybook Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/8601dadf-d374-4ef1-8178-350ec4c3511d",
+            "sourceStep": "\/api\/3\/workflow_steps\/c3bc72cb-ebec-49b9-81c0-5732d248a6e2",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "4482109e-367b-4fa2-b0b8-2a444d018341"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set SLA Notification Method -> No Configuraiton Set",
+            "targetStep": "\/api\/3\/workflow_steps\/aef2a68c-74e4-4c1a-9963-9b7b0b287a64",
+            "sourceStep": "\/api\/3\/workflow_steps\/71d999c5-00c4-49cb-a81b-40ba3d551eee",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "34536804-9ab6-492d-97f7-48a533258d11"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Copy of Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/128f1e3f-932c-48b2-a9ef-bf58143291e0",
+            "sourceStep": "\/api\/3\/workflow_steps\/73fea0bb-b1c9-46e2-9ad0-d0147287b64f",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "defcb758-fc24-46d8-9ca8-ddaef07ba68e"
         }
     ],
     "groups": [],

@@ -27,14 +27,14 @@
         "SLA"
     ],
     "fsrMinCompatibility": "7.2.0",
-    "date": "2022-11-08T07:47:38+00:00",
+    "date": "2022-11-14T08:29:09+00:00",
     "contents": {
         "playbooks": [
             {
                 "name": "02 - Use Case - SLA Notification"
             }
         ],
-        "globalVariables": null,
+        "globalVariables": [],
         "dashboards": [
             {
                 "name": "SLA Monitor"
