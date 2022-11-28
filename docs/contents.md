@@ -3,11 +3,21 @@
 
 
 ## Content:
-- Playbooks:
-    - Create Alerts and Incidents Records
-    - Alerts SLA Notification
-    - Incidents SLA Notification
-    - Send Message to Teams Channel
+
+## Playbook Collection
+
+| 02 - Use Case - SLA Notification |
+| :- |
+
+|Playbook Name|Description|
+| :- | :- |
+|Create Alerts and Incidents Records|Creates records to populate dashboards and reports|
+|Alerts SLA Notification|Notify users when SLA is about to be breached|
+|Incidents SLA Notification|Notify users when SLA is about to be breached|
+|Send Message to Teams Channel|Send message to channel|
+
+>**Warning:** We recommend that you clone these playbooks before customizing to avoid loss of information while upgrading the solution pack.
+
 - Dashboard:
    - SLA Monitor
 
