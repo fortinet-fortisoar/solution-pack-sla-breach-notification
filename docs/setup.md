@@ -25,7 +25,3 @@
     - Schedule the playbooks below to run each 10 minutes or so (depending on your SLA policy you can increase or decrease the checks frequencies):
         - Alerts SLA Notification
         - Incidents SLA Notification
-
-## Usage:
-
-Run the playbook: **Create Alerts and Incidents Records** to populate FortiSOAR with sample records, then browse to **SLA Notification** Dashboard
