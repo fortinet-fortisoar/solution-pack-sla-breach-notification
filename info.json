@@ -6,6 +6,12 @@
     "label": "SLA Notification",
     "dependencies": [
         {
+            "name": "sOARFramework",
+            "type": "solutionpack",
+            "label": "SOAR Framework",
+            "minVersion": null
+        },
+        {
             "name": "socSimulator",
             "type": "solutionpack",
             "label": "SOC Simulator",
@@ -42,9 +48,9 @@
         ],
         "recordSets": [
             {
-                "name": null,
+                "name": "Scenario",
                 "apiName": "scenario",
-                "count": 6
+                "count": 1
             }
         ]
     }
